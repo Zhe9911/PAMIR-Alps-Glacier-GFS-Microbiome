@@ -1,0 +1,99 @@
+KO	gene_name	marker_role	functional_category	include_in_heatmap	heatmap_order
+K02291	crtB	supporting	Carotenoid genes	TRUE	1
+K10027	crtI	supporting	Carotenoid genes	TRUE	2
+K06443	lcy/crtL1/crtY	focal	Carotenoid genes	TRUE	3
+K15746	crtZ	focal	Carotenoid genes	TRUE	4
+K09836	crtW	focal	Carotenoid genes	TRUE	5
+K04643	sop	supporting	Rhodopsin genes	TRUE	6
+K21817	blh	focal	Rhodopsin genes	TRUE	7
+K24119	ahpC	supporting	Oxidative stress defense and DNA protection	TRUE	8
+K03387	ahpF	supporting	Oxidative stress defense and DNA protection	TRUE	9
+K04047	dps	focal	Oxidative stress defense and DNA protection	TRUE	10
+K01247	alkA	focal	DNA base excision repair genes	TRUE	11
+K03652	MPG	focal	DNA base excision repair genes	TRUE	12
+K03182	ubiD	supporting	Ubiquinone genes	TRUE	18
+K03186	ubiX	focal	Ubiquinone genes	TRUE	19
+K24843	ubiT	focal	Ubiquinone genes	TRUE	20
+K24844	ubiU	focal	Ubiquinone genes	TRUE	21
+K24845	ubiV	supporting	Ubiquinone genes	TRUE	22
+K00973	rmlA	focal	Cell envelope-associated genes	TRUE	13
+K01710	rmlB	focal	Cell envelope-associated genes	TRUE	14
+K01790	rmlC	focal	Cell envelope-associated genes	TRUE	15
+K00067	rmlD	focal	Cell envelope-associated genes	TRUE	16
+K07275	ompW	focal	Cell envelope-associated genes	TRUE	17
+K00451	hmgA/HGD	supporting	Tyrosine degradation genes	TRUE	27
+K01800	maiA/GSTZ1	supporting	Tyrosine degradation genes	TRUE	28
+K01555	FAH/fahA	focal	Tyrosine degradation genes	TRUE	29
+K17222	soxA	supporting	Sulfur oxidation genes	TRUE	30
+K17224	soxB	supporting	Sulfur oxidation genes	TRUE	31
+K17225	soxC	supporting	Sulfur oxidation genes	TRUE	32
+K22622	soxD	supporting	Sulfur oxidation genes	TRUE	33
+K17223	soxX	supporting	Sulfur oxidation genes	TRUE	34
+K17226	soxY	supporting	Sulfur oxidation genes	TRUE	35
+K17227	soxZ	supporting	Sulfur oxidation genes	TRUE	36
+K17229	fccB	focal	Sulfur oxidation genes	TRUE	37
+K17230	fccA	supporting	Sulfur oxidation genes	TRUE	38
+K03518	coxS	focal	CO oxidation genes	TRUE	39
+K03519	coxM/cutM	focal	CO oxidation genes	TRUE	40
+K03520	coxL/cutL	supporting	CO oxidation genes	TRUE	41
+K18223	prmA	focal	Short-chain hydrocarbon/alcohol oxidation genes	TRUE	42
+K18225	prmB	supporting	Short-chain hydrocarbon/alcohol oxidation genes	TRUE	43
+K18224	prmC	supporting	Short-chain hydrocarbon/alcohol oxidation genes	TRUE	44
+K18226	prmD	supporting	Short-chain hydrocarbon/alcohol oxidation genes	TRUE	45
+K18382	adh1	focal	Short-chain hydrocarbon/alcohol oxidation genes	TRUE	46
+K18369	adh2	supporting	Short-chain hydrocarbon/alcohol oxidation genes	TRUE	47
+K10112	msmX/msmK/malK/sugC/ggtA/msiK	focal	Carbohydrate ABC transporter genes	TRUE	48
+K02027	ABC.MS.S	supporting	Carbohydrate ABC transporter genes	TRUE	49
+K02025	ABC.MS.P	supporting	Carbohydrate ABC transporter genes	TRUE	50
+K02026	ABC.MS.P1	supporting	Carbohydrate ABC transporter genes	TRUE	51
+K09969	aapJ/bztA	focal	Amino acid ABC transporter genes	TRUE	52
+K09970	aapQ/bztB	focal	Amino acid ABC transporter genes	TRUE	53
+K09971	aapM/bztC	supporting	Amino acid ABC transporter genes	TRUE	54
+K18242	nagG	focal	Aromatic compound degradation genes	TRUE	55
+K18243	nagH	supporting	Aromatic compound degradation genes	TRUE	56
+K00450	E1.13.11.4	focal	Aromatic compound degradation genes	TRUE	57
+K10218	ligK/galC	focal	Aromatic compound degradation genes	TRUE	58
+K10914	crp	supporting	Surface colonization-associated genes	TRUE	59
+K01768	E4.6.1.1	focal	Surface colonization-associated genes	TRUE	60
+K02652	pilB	focal	Surface colonization-associated genes	TRUE	61
+K02653	pilC	supporting	Surface colonization-associated genes	TRUE	62
+K02654	pilD	supporting	Surface colonization-associated genes	TRUE	63
+K02666	pilQ	supporting	Surface colonization-associated genes	TRUE	64
+K02669	pilT	supporting	Surface colonization-associated genes	TRUE	65
+K02450	gspA	focal	Surface colonization-associated genes	TRUE	66
+K02451	gspB	focal	Surface colonization-associated genes	TRUE	67
+K02452	gspC	supporting	Surface colonization-associated genes	TRUE	68
+K02453	gspD	supporting	Surface colonization-associated genes	TRUE	69
+K02454	gspE	supporting	Surface colonization-associated genes	TRUE	70
+K02455	gspF	focal	Surface colonization-associated genes	TRUE	71
+K02456	gspG	supporting	Surface colonization-associated genes	FALSE	NA
+K02457	gspH	supporting	Surface colonization-associated genes	FALSE	NA
+K02458	gspI	supporting	Surface colonization-associated genes	FALSE	NA
+K02459	gspJ	supporting	Surface colonization-associated genes	FALSE	NA
+K02460	gspK	supporting	Surface colonization-associated genes	FALSE	NA
+K02461	gspL	supporting	Surface colonization-associated genes	FALSE	NA
+K02462	gspM	supporting	Surface colonization-associated genes	FALSE	NA
+K20920	vpsM	focal	Surface colonization-associated genes	TRUE	72
+K19622	phcR	focal	Surface colonization-associated genes	TRUE	73
+K19623	phcQ	focal	Surface colonization-associated genes	TRUE	74
+K19620	phcB	supporting	Surface colonization-associated genes	TRUE	75
+K03567	gcvR	focal	Glycine cleavage system and regulation genes	FALSE	NA
+K03566	gcvA	supporting	Glycine cleavage system and regulation genes	FALSE	NA
+K00281	GLDC/gcvP	supporting	Glycine cleavage system and regulation genes	FALSE	NA
+K00605	gcvT/AMT	supporting	Glycine cleavage system and regulation genes	FALSE	NA
+K02437	gcvH/GCSH	supporting	Glycine cleavage system and regulation genes	FALSE	NA
+K00121	frmA/ADH5/adhC	focal	Glutathione-dependent formaldehyde detoxification genes	FALSE	NA
+K01070	frmB/ESD/fghA	supporting	Glutathione-dependent formaldehyde detoxification genes	FALSE	NA
+K00374	narI/narV	focal	Nitrate reduction genes	TRUE	23
+K00370	narG/narZ/nxrA	supporting	Nitrate reduction genes	TRUE	24
+K00371	narH/narY/nxrB	supporting	Nitrate reduction genes	TRUE	25
+K00373	narJ/narW	supporting	Nitrate reduction genes	TRUE	26
+K03735	eutB	focal	Ethanolamine ammonia-lyase genes	FALSE	NA
+K03736	eutC	supporting	Ethanolamine ammonia-lyase genes	FALSE	NA
+K01577	oxc	focal	Oxalate degradation genes	FALSE	NA
+K07749	frc	focal	Oxalate degradation genes	FALSE	NA
+K11746	kefF	focal	Glutathione-regulated potassium efflux genes	FALSE	NA
+K11745	kefC	supporting	Glutathione-regulated potassium efflux genes	FALSE	NA
+K15511	boxA	focal	Aerobic benzoyl-CoA degradation genes	FALSE	NA
+K15512	boxB	supporting	Aerobic benzoyl-CoA degradation genes	FALSE	NA
+K15513	boxC	supporting	Aerobic benzoyl-CoA degradation genes	FALSE	NA

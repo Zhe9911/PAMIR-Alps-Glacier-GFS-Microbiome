@@ -1,0 +1,37 @@
+package	version	system_requirements
+BiocParallel	1.44.0	C++11
+clipr	0.8.0	xclip (https://github.com/astrand/xclip) or xsel (http://www.vergenet.net/~conrad/software/xsel/) for accessing the X11 clipboard, or wl-clipboard (https://github.com/bugaevc/wl-clipboard) for systems using Wayland.
+curl	7.0.0	libcurl (>= 7.73): libcurl-devel (rpm) or libcurl4-openssl-dev (deb)
+DescTools	0.99.60	C++17
+ECOSolveR	0.5.5	GNU make
+fs	1.6.7	GNU make
+gdtools	0.4.4	cairo, freetype2, fontconfig
+GGally	2.4.0	openssl
+ggiraph	0.9.2	libpng
+gmp	0.7-5	gmp (>= 4.2.3)
+gsl	2.1-9	Gnu Scientific Library version >= 2.5
+haven	2.5.5	GNU make, zlib: zlib1g-dev (deb), zlib-devel (rpm)
+httpuv	1.6.17	GNU make, zlib
+igraph	2.2.1	libxml2 (optional), glpk (>= 4.57, optional)
+knitr	1.51	Package vignettes based on R Markdown v2 or reStructuredText require Pandoc (http://pandoc.org). The function rst2pdf() requires rst2pdf (https://github.com/rst2pdf/rst2pdf).
+lubridate	1.9.5	A system with zoneinfo data (e.g. /usr/share/zoneinfo). On Windows the zoneinfo included with R is used.
+microbenchmark	1.5.0	On a Unix-alike, one of the C functions mach_absolute_time (macOS), clock_gettime or gethrtime. If none of these is found, the obsolescent POSIX function gettimeofday will be tried.
+minqa	1.2.8	GNU make
+nloptr	2.2.1	cmake (>= 3.2.0) which is used only on Linux or macOS systems when no system build of nlopt (>= 2.7.0) can be found.
+openssl	2.3.5	OpenSSL >= 1.0.2
+osqp	0.6.3.3	C++17
+png	0.1-8	libpng
+ragg	1.5.1	freetype2, libpng, libtiff, libjpeg, libwebp, libwebpmux
+reprex	2.1.1	pandoc (>= 2.0) - https://pandoc.org/
+rhdf5	2.54.1	GNU make
+rhdf5filters	1.22.0	GNU make
+Rhdf5lib	1.32.0	GNU make
+rmarkdown	2.30	pandoc (>= 1.14) - http://pandoc.org
+Rmpfr	1.1-2	gmp (>= 4.2.3), mpfr (>= 3.2.0), pdfcrop (part of TexLive) is required to rebuild the vignettes.
+sass	0.4.10	GNU make
+scs	3.2.7	GNU Make
+stringi	1.8.7	ICU4C (>= 61, optional)
+systemfonts	1.3.2	fontconfig, freetype2
+textshaping	1.0.5	freetype2, harfbuzz, fribidi
+timechange	0.4.0	A system with zoneinfo data (e.g. /usr/share/zoneinfo). On Windows the zoneinfo included with R is used.
+xml2	1.5.1	libxml2: libxml2-dev (deb), libxml2-devel (rpm)

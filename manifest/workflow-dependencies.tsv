@@ -1,0 +1,20 @@
+step_id	analysis_script	depends_on	required_input_class	primary_result_directory
+01.01	code/01_16s/01_preprocess_16s.R	none	processed ASV table; 16S metadata; mock reference	results/01_16s
+01.02	code/01_16s/02_asv_overlap.R	01.01	filtered phyloseq object	results/01_16s/asv_overlap
+01.03	code/01_16s/03_alpha_diversity.R	01.01	filtered phyloseq object	results/01_16s/alpha_diversity
+01.04	code/01_16s/04_dissimilarity.R	01.01	filtered phyloseq object; ASV tree	results/01_16s/dissimilarity
+01.05	code/01_16s/05_nmds.R	01.01	filtered phyloseq object	results/01_16s/nmds
+02.01	code/02_community/01_gamm_sourcetracker.R	01.01;01.04	filtered phyloseq object; same-glacier distances; GI metadata; frozen SourceTracker result	results/02_community/gamm
+02.ST	code/02_community/sourcetracker2/run_sourcetracker2_script.py	02.01	SourceTracker BIOM and metadata exported during step 02.01; documented Python runtime	results/generated/02_community/sourcetracker/Results
+02.02	code/02_community/02_icamp_run.R	01.01	filtered phyloseq object; ASV tree; regional metadata	results/02_community/icamp
+02.03	code/02_community/03_icamp_analysis.R	01.01	filtered phyloseq object; iCAMP pairwise process fractions from step 02.02 or data/derived/frozen; GI metadata	results/02_community/icamp
+03.01	code/03_mags/01_mag_asv_validation.R	01.01	MAG abundance; metagenomic metadata; taxonomy; 16S object	results/03_mags/asv_mag_validation
+03.02	code/03_mags/02_mag_gi_association.R	none	MAG count table; metagenomic metadata; taxonomy; quality	results/03_mags/gi_association
+03.03	code/03_mags/03_mag_response_groups.R	03.01;03.02	MAG relative-abundance object; MAG GI-response metadata	results/03_mags/response_groups
+03.04	code/03_mags/04_mag_phylogeny_plot.R	03.01;03.02	MAG relative-abundance object; MAG phylogeny; MAG metadata	results/03_mags/phylogeny
+03.05	code/03_mags/05_mag_phylogenetic_signal.R	03.01;03.02	MAG relative-abundance object; MAG phylogeny; LFC-GI estimates and standard errors	results/03_mags/phylogenetic_signal
+04.01	code/04_functions/01_ko_gsea.R	03.02	KO-by-MAG matrix; MAG metadata; KEGG pathway/module mappings	results/04_functions/ko_gsea
+04.02	code/04_functions/02_kegg_phylogenetic_projection.R	03.01;03.02;04.01	KO matrix; MAG tree and metadata; significant GSEA tables	results/04_functions/phylogenetic_projection
+05.01	code/05_polaromonas/01_pangenome_and_tree.R	03.02	Polaromonas pangenome summary; ingroup and outgroup trees; MAG metadata	results/05_polaromonas
+05.02	code/05_polaromonas/02_clade_contrast.R	03.02	Polaromonas clade assignment; ANIb matrix; MAG metadata	results/05_polaromonas/clade_contrast
+05.03	code/05_polaromonas/03_ko_marker_analysis.R	03.02;05.01	KO matrix; pangenome classes; clade assignment; frozen marker config	results/05_polaromonas/ko_clade_presence

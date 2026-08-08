@@ -1,0 +1,43 @@
+cff-version: 1.2.0
+message: "If you use this analysis code, please cite this repository and the companion dataset."
+title: "PAMIR-Alps-Glacier-GFS-Microbiome: analysis code and reproducibility materials"
+type: software
+version: "1.0"
+date-released: 2026-08-10
+authors:
+  - family-names: Liu
+    given-names: Zhe
+    affiliation: "River Ecosystems Laboratory, Alpine and Polar Environmental Research Center, ENAC, École Polytechnique Fédérale de Lausanne, Sion, Switzerland"
+abstract: "Analysis code, computational environment, and documentation supporting the associated manuscript."
+keywords:
+  - glacier-fed streams
+  - microbial ecology
+  - metabarcoding
+  - metagenomics
+  - metagenome-assembled genomes
+  - community assembly
+  - cryosphere
+  - deglaciation
+license: MIT
+repository-code: "https://github.com/Zhe9911/PAMIR-Alps-Glacier-GFS-Microbiome"
+references:
+  - type: data
+    title: "Data for: Glacier-to-downstream continuum shapes microbial connectivity and adaptive genomic traits"
+    authors:
+      - family-names: Liu
+        given-names: Zhe
+      - family-names: Michoud
+        given-names: Grégoire
+      - family-names: Poniecka
+        given-names: Ewa
+      - family-names: Peter
+        given-names: Hannes
+      - family-names: Baier
+        given-names: Florian
+      - family-names: Deluigi
+        given-names: Nicola
+      - family-names: Battin
+        given-names: Tom
+    doi: "10.5281/zenodo.21703331"
+    version: "1.0"
+    date-released: 2026-08-07

@@ -1,0 +1,30 @@
+manuscript_artifact	panel_or_content	analysis_scripts	primary_output_or_product	note
+Figure 1	a	code/01_16s/02_asv_overlap.R	results/01_16s/asv_overlap/figure_1a_habitat_overlap.pdf	Habitat ASV overlap
+Figure 1	b	code/01_16s/03_alpha_diversity.R	results/01_16s/alpha_diversity/figure_1b_hill_diversity.pdf	95%-coverage Hill diversity
+Figure 1	c	code/01_16s/04_dissimilarity.R	results/01_16s/dissimilarity/figure_1c_bray_curtis_dissimilarity.pdf	Within- and between-habitat Bray-Curtis dissimilarity
+Figure 2	a	code/01_16s/05_nmds.R	results/01_16s/nmds/figure_2a_nmds_connected.pdf	Connected glacier-to-downstream NMDS
+Figure 2	b	code/01_16s/03_alpha_diversity.R	results/01_16s/alpha_diversity/figure_2b_shannon_diversity.pdf	Ordered ice-to-sediment Shannon trend
+Figure 2	c-d	code/01_16s/04_dissimilarity.R;code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/figure_2c_e_gamm_correlations.pdf	Same-glacier Bray-Curtis and weighted-UniFrac GAMMs
+Figure 2	e	code/02_community/sourcetracker2/run_sourcetracker2_script.py;code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/figure_2c_e_gamm_correlations.pdf	Frozen 146-sediment SourceTracker result; optional depth-10,000 audit documented
+Figure 2	f	code/02_community/02_icamp_run.R;code/02_community/03_icamp_analysis.R	results/02_community/icamp/figure_2f_homogeneous_selection_vs_gi.pdf	Frozen 5,377-row pairwise result with downstream aggregation and glacier-constrained MRQAP
+Figure 3	a	code/03_mags/04_mag_phylogeny_plot.R	results/03_mags/phylogeny/Final_MAGs_Phylo_iqtree.pdf	Annotated 833-MAG tree
+Figure 3	b	code/03_mags/02_mag_gi_association.R	results/03_mags/gi_association/MAG_LFC_GI_distribution.pdf	Continuous MAG LFC-GI distribution
+Figure 3	c	code/03_mags/03_mag_response_groups.R	results/03_mags/response_groups/Group_Relative_Abundance.pdf	Ordered response-group abundance trends
+Main text	Figure 3-associated phylogenetic-signal statistics	code/03_mags/05_mag_phylogenetic_signal.R	results/03_mags/phylogenetic_signal/phylogenetic_signal_summary.csv	se_GI-adjusted Pagel's lambda and Blomberg's K with unadjusted sensitivity results
+Figure 4	all	code/04_functions/01_ko_gsea.R;code/04_functions/02_kegg_phylogenetic_projection.R	results/04_functions/phylogenetic_projection/KEGG_core_enrichment_KO_coverage_tree.pdf	23-of-33 feature projection
+Figure 5	a	code/05_polaromonas/01_pangenome_and_tree.R	results/05_polaromonas/Polaromonas_phylo_tree_with_outgroup_rectangular_heatmap.pdf	Rectangular rooted 46-MAG Polaromonas tree
+Figure 5	b	code/05_polaromonas/02_clade_contrast.R	results/05_polaromonas/clade_contrast/Polaromonas_clade_lfcGI_boxplot.pdf	Clade-D versus Clade-G exact permutation contrast
+Figure 5	c-d	code/05_polaromonas/03_ko_marker_analysis.R	results/05_polaromonas/marker_gene_clade_heatmap/Polaromonas_marker_gene_clade_copy_number_heatmap.pdf	Descriptive KO copy-number heatmap
+Extended Data Figure 1	all	code/01_16s/02_asv_overlap.R	results/01_16s/asv_overlap/extended_data_figure_1_region_overlap.pdf	Regional ASV overlap
+Extended Data Figure 2	all	code/01_16s/02_asv_overlap.R	results/01_16s/asv_overlap/extended_data_figure_2_intersection_taxonomy.pdf	Intersection taxonomy
+Extended Data Figure 3	all	code/03_mags/01_mag_asv_validation.R	results/03_mags/asv_mag_validation/Order_ASV_MAG_spearman_dotplot.pdf	Order-level ASV-MAG concordance
+Extended Data Figure 4	all	code/03_mags/01_mag_asv_validation.R	results/03_mags/asv_mag_validation/Procrustes_16S_MAG_NMDS.pdf	Community-wide Procrustes validation
+Extended Data Figure 5	all	code/03_mags/02_mag_gi_association.R	results/03_mags/gi_association/MAG_GI_response_volcano.pdf	MAG response classification volcano
+Extended Data Figure 6	all	code/04_functions/01_ko_gsea.R	results/04_functions/ko_gsea/KO_lfcGI_firth_volcano.pdf	KO LFC-GI association volcano
+Extended Data Figure 7	all	code/01_16s/01_preprocess_16s.R	results/01_16s/qc/extended_data_figure_7_mock_composition.pdf	Mock-community validation
+Extended Data Table 1	all	code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/extended_data_table_1_gamm_models.csv	GAMM model comparison and coefficients
+Extended Data Table 2	all	code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/extended_data_table_2_permanova.csv	Pairwise PERMANOVA with BH-FDR
+Extended Data Table 3	all	code/02_community/03_icamp_analysis.R	results/02_community/icamp/extended_data_table_3.csv	iCAMP MRQAP coefficients
+Extended Data Table 4	all	code/04_functions/02_kegg_phylogenetic_projection.R	results/04_functions/phylogenetic_projection/feature_within_phylum_trend_extended_data_table.csv	Within-phylum trend consistency
+Supplementary Data 1	environmental sample metadata and sample accounting	none	data/processed/16s/metadata_16S.csv;data/processed/16s/env_GI.csv	Released source tables used to assemble the final workbook
+Supplementary Data 2	complete KEGG GSEA and curated Polaromonas KO tables	code/04_functions/01_ko_gsea.R;code/05_polaromonas/03_ko_marker_analysis.R	results/04_functions/ko_gsea/Supplementary Data 2.csv;results/05_polaromonas/ko_clade_presence/Supplementary Data 2.csv	Two generated table components assembled in the final workbook

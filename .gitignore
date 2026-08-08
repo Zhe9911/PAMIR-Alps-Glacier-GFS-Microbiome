@@ -1,0 +1,70 @@
+# Operating-system and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# R session and project state
+.Rhistory
+.Ruserdata
+.Rproj.user/
+renv/library/
+renv/staging/
+renv/python/
+
+# Secrets and private configuration
+.Renviron
+.env
+.env.*
+config/private/
+manifest/data-source-map.local.tsv
+*private-crosswalk*
+*sample-id-crosswalk*
+
+# Temporary and generated files
+tmp/
+.tmp/
+cache/
+logs/
+*.log
+*.tmp
+*.bak
+*~
+__pycache__/
+*.py[cod]
+
+# Raw sequencing and alignment files are deposited externally
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+*.bam
+*.bai
+*.cram
+*.crai
+
+# Companion Zenodo data and local release archive
+/data/
+/release/zenodo/
+
+# Large or binary research objects require explicit review before tracking
+*.RData
+*.rds
+*.RDS
+*.qza
+*.qzv
+*.biom
+*.fasta
+*.fa
+*.fna
+*.faa
+*.gz
+*.zip
+*.tar
+*.7z
+
+# Generated build products
+/results/*
+!/results/README.md
+docs/rendered/
