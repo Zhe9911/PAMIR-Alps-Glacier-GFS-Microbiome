@@ -3,8 +3,8 @@ step_id	analysis_script	depends_on	required_input_class	primary_result_directory
 01.02	code/01_16s/02_asv_overlap.R	01.01	filtered phyloseq object	results/01_16s/asv_overlap
 01.03	code/01_16s/03_alpha_diversity.R	01.01	filtered phyloseq object	results/01_16s/alpha_diversity
 01.04	code/01_16s/04_dissimilarity.R	01.01	filtered phyloseq object; ASV tree	results/01_16s/dissimilarity
-01.05	code/01_16s/05_nmds.R	01.01	filtered phyloseq object	results/01_16s/nmds
-02.01	code/02_community/01_gamm_sourcetracker.R	01.01;01.04	filtered phyloseq object; same-glacier distances; GI metadata; frozen SourceTracker result	results/02_community/gamm
+01.05	code/01_16s/05_nmds.R	01.01	filtered phyloseq object with Group_GI and gl_name metadata	results/01_16s/nmds
+02.01	code/02_community/01_gamm_sourcetracker.R	01.01;01.04	filtered phyloseq object; ASV tree; same-glacier sediment distances; GI metadata; full frozen SourceTracker result for sediment and water sinks	results/02_community/gamm
 02.ST	code/02_community/sourcetracker2/run_sourcetracker2_script.py	02.01	SourceTracker BIOM and metadata exported during step 02.01; documented Python runtime	results/generated/02_community/sourcetracker/Results
 02.02	code/02_community/02_icamp_run.R	01.01	filtered phyloseq object; ASV tree; regional metadata	results/02_community/icamp
 02.03	code/02_community/03_icamp_analysis.R	01.01	filtered phyloseq object; iCAMP pairwise process fractions from step 02.02 or data/derived/frozen; GI metadata	results/02_community/icamp

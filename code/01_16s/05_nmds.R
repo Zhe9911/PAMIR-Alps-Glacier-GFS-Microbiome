@@ -1,5 +1,5 @@
 # 16S NMDS analysis
-# Manuscript output: Figure 2a.
+# Manuscript output: Figure 2a and its PERMANOVA/PERMDISP support.
 
 rm(list = ls())
 gc()
@@ -66,7 +66,7 @@ ps_NMDS <- subset_samples(PAMIR_16S_merged_phyloseq, Source != "water")
 ps_NMDS <- prune_taxa(taxa_sums(ps_NMDS) > 0, ps_NMDS)
 ps_NMDS
 
-sample_data_NMDS <- as.data.frame(sample_data(ps_NMDS))
+sample_data_NMDS <- data.frame(sample_data(ps_NMDS))
 
 # Transform counts to relative abundance before Bray-Curtis calculation.
 ps_NMDS_rel <- transform_sample_counts(ps_NMDS, function(x) x / sum(x))
@@ -74,6 +74,51 @@ ps_NMDS_rel <- transform_sample_counts(ps_NMDS, function(x) x / sum(x))
 # Calculate the Bray-Curtis distance matrix.
 set.seed(666)
 bray_dist_NMDS <- distance(ps_NMDS_rel, method = "bray")
+
+# --- PERMANOVA and multivariate dispersion ---
+
+# Test glacier-position differences using permutations restricted within glaciers.
+if (
+  any(is.na(sample_data_NMDS$Group_GI)) ||
+    any(is.na(sample_data_NMDS$gl_name))
+) {
+  stop(
+    "Group_GI and gl_name must not contain missing values for permutation tests."
+  )
+}
+
+permutation_design <- permute::how(
+  nperm = 9999,
+  blocks = sample_data_NMDS$gl_name
+)
+
+set.seed(666)
+permanova_result <- adonis2(
+  bray_dist_NMDS ~ Group_GI,
+  data = sample_data_NMDS,
+  permutations = permutation_design
+)
+print(permanova_result)
+
+# Check whether groups differ in their within-group multivariate dispersion.
+dispersion <- betadisper(bray_dist_NMDS, sample_data_NMDS$Group_GI)
+set.seed(666)
+dispersion_result <- permutest(
+  dispersion,
+  permutations = permutation_design
+)
+print(dispersion_result)
+
+write.csv(
+  as.data.frame(permanova_result),
+  file.path(result_dir, "figure_2a_permanova_group_gi.csv"),
+  row.names = TRUE
+)
+write.csv(
+  as.data.frame(dispersion_result$tab),
+  file.path(result_dir, "figure_2a_permdisp_group_gi.csv"),
+  row.names = TRUE
+)
 
 # Report stress for k = 2:4 as a diagnostic; this does not select dimensionality.
 stress_values <- list()

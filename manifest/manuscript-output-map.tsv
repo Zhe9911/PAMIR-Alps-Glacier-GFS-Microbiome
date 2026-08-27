@@ -3,6 +3,7 @@ Figure 1	a	code/01_16s/02_asv_overlap.R	results/01_16s/asv_overlap/figure_1a_hab
 Figure 1	b	code/01_16s/03_alpha_diversity.R	results/01_16s/alpha_diversity/figure_1b_hill_diversity.pdf	95%-coverage Hill diversity
 Figure 1	c	code/01_16s/04_dissimilarity.R	results/01_16s/dissimilarity/figure_1c_bray_curtis_dissimilarity.pdf	Within- and between-habitat Bray-Curtis dissimilarity
 Figure 2	a	code/01_16s/05_nmds.R	results/01_16s/nmds/figure_2a_nmds_connected.pdf	Connected glacier-to-downstream NMDS
+Main text	Figure 2a-associated PERMANOVA and PERMDISP	code/01_16s/05_nmds.R	results/01_16s/nmds/figure_2a_permanova_group_gi.csv;results/01_16s/nmds/figure_2a_permdisp_group_gi.csv	Glacier-blocked 9,999-permutation tests for ice and sediment-position groups; water excluded
 Figure 2	b	code/01_16s/03_alpha_diversity.R	results/01_16s/alpha_diversity/figure_2b_shannon_diversity.pdf	Ordered ice-to-sediment Shannon trend
 Figure 2	c-d	code/01_16s/04_dissimilarity.R;code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/figure_2c_e_gamm_correlations.pdf	Same-glacier Bray-Curtis and weighted-UniFrac GAMMs
 Figure 2	e	code/02_community/sourcetracker2/run_sourcetracker2_script.py;code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/figure_2c_e_gamm_correlations.pdf	Frozen 146-sediment SourceTracker result; optional depth-10,000 audit documented
@@ -19,11 +20,10 @@ Extended Data Figure 1	all	code/01_16s/02_asv_overlap.R	results/01_16s/asv_overl
 Extended Data Figure 2	all	code/01_16s/02_asv_overlap.R	results/01_16s/asv_overlap/extended_data_figure_2_intersection_taxonomy.pdf	Intersection taxonomy
 Extended Data Figure 3	all	code/03_mags/01_mag_asv_validation.R	results/03_mags/asv_mag_validation/Order_ASV_MAG_spearman_dotplot.pdf	Order-level ASV-MAG concordance
 Extended Data Figure 4	all	code/03_mags/01_mag_asv_validation.R	results/03_mags/asv_mag_validation/Procrustes_16S_MAG_NMDS.pdf	Community-wide Procrustes validation
-Extended Data Figure 5	all	code/03_mags/02_mag_gi_association.R	results/03_mags/gi_association/MAG_GI_response_volcano.pdf	MAG response classification volcano
-Extended Data Figure 6	all	code/04_functions/01_ko_gsea.R	results/04_functions/ko_gsea/KO_lfcGI_firth_volcano.pdf	KO LFC-GI association volcano
-Extended Data Figure 7	all	code/01_16s/01_preprocess_16s.R	results/01_16s/qc/extended_data_figure_7_mock_composition.pdf	Mock-community validation
-Extended Data Table 1	all	code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/extended_data_table_1_gamm_models.csv	GAMM model comparison and coefficients
-Extended Data Table 2	all	code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/extended_data_table_2_permanova.csv	Pairwise PERMANOVA with BH-FDR
+Extended Data Figure 5	all	code/04_functions/01_ko_gsea.R	results/04_functions/ko_gsea/KO_lfcGI_firth_volcano.pdf	Generated KO LFC-GI association volcano underlying the manually fine-tuned manuscript panel
+Extended Data Figure 6	all	code/01_16s/01_preprocess_16s.R	results/01_16s/qc/extended_data_figure_6_mock_composition.pdf	Mock-community validation
+Extended Data Table 1	all	code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/extended_data_table_1_gamm_models.csv	Sediment GAMM model comparison and coefficients
+Extended Data Table 2	all	code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/extended_data_table_2_water_gamm_models.csv	Water GAMM model comparison and coefficients; the ice-source-proportion response uses the 37 water sinks in the full 183-sink frozen SourceTracker table
 Extended Data Table 3	all	code/02_community/03_icamp_analysis.R	results/02_community/icamp/extended_data_table_3.csv	iCAMP MRQAP coefficients
 Extended Data Table 4	all	code/04_functions/02_kegg_phylogenetic_projection.R	results/04_functions/phylogenetic_projection/feature_within_phylum_trend_extended_data_table.csv	Within-phylum trend consistency
 Supplementary Data 1	environmental sample metadata and sample accounting	none	data/processed/16s/metadata_16S.csv;data/processed/16s/env_GI.csv	Released source tables used to assemble the final workbook

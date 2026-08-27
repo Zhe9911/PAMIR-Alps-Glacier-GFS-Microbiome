@@ -13,7 +13,10 @@ Rscript code/04_functions/01_ko_gsea.R
 Rscript code/04_functions/02_kegg_phylogenetic_projection.R
 ```
 
-Step 2 requires step 1's significant GSEA tables. Outputs are written to
+Step 1 writes the KO-association volcano underlying Extended Data Figure 5 and
+the complete GSEA tables. The final manuscript panel was manually fine-tuned,
+so its layout differs slightly from the generated source figure. Step 2 requires
+step 1's significant GSEA tables. Outputs are written to
 `results/04_functions/`.
 
 ## Inputs

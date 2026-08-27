@@ -17,7 +17,9 @@ Rscript code/03_mags/05_mag_phylogenetic_signal.R
 ```
 
 Steps 1 and 2 create `PAMIR_MAGs_rela.rds` and `MAGs_info.csv`; steps 3–5
-require both. Outputs are written to `results/03_mags/`.
+require both. Step 2 also writes the complete MAG association table and the
+continuous LFC-GI distribution used for Figure 3b. Outputs are written to
+`results/03_mags/`.
 
 ## Inputs
 

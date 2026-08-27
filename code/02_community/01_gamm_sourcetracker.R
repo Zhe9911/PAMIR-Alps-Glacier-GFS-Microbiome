@@ -1,6 +1,6 @@
 # GAMM and SourceTracker analysis
-# Models community dissimilarity, SourceTracker mixing proportions, and
-# bacterial abundance along the Glacial Index gradient.
+# Models sediment and water community dissimilarity, SourceTracker mixing
+# proportions, and bacterial abundance along the Glacial Index gradient.
 
 rm(list = ls())
 gc()
@@ -11,6 +11,7 @@ ps_path <- file.path(
 )
 dissimilarity_dir <- file.path("results", "01_16s", "dissimilarity")
 input_dir <- file.path("data", "processed", "16s")
+tree_path <- file.path(input_dir, "dna-sequences.tree")
 sourcetracker_input_dir <- file.path(
   "results", "generated", "02_community", "sourcetracker"
 )
@@ -27,7 +28,6 @@ library(tidyverse)
 library(ggplot2)
 library(ggpubr)
 library(gridExtra)
-library(vegan)
 
 library(mgcv)
 library(MuMIn)
@@ -149,7 +149,8 @@ write.csv(
 )
 
 # SourceTracker2 can be rerun with the companion Python script.
-# This analysis reads the frozen mixing-proportion table used for Figure 2e.
+# This analysis reads the frozen mixing-proportion table used for Figure 2e and
+# the ice-source-proportion GAMMs in Extended Data Tables 1-2.
 
 Proportion <- read.csv(sourcetracker_result_path, sep = ",")
 Proportion <- Proportion %>%
@@ -1375,136 +1376,638 @@ tryCatch(
 # approximate smooth-term P values from mgcv.
 print(extended_gam_results_table)
 
-# --- Supplementary PERMANOVA across habitat-GI categories ---
+# --- Water response data for Extended Data Table 2 ---
 
-# These tests provide a supplementary group-level comparison across composite
-# habitat-GI categories, including ice, water GI categories, and sediment GI
-# categories. Because `Group_GI` combines habitat type and categorical GI
-# classes, this analysis is intended only to test broad compositional
-# differences among these predefined groups. It is not used to infer continuous
-# GI effects or to replace the sediment GAMM analyses above.
-
-ps_rel_initial <- transform_sample_counts(ps, function(x) x / sum(x))
-
-set.seed(666)
-bray_dist_initial <- distance(ps_rel_initial, method = "bray")
-
-env_vars <- c("Group_GI")
-env_data <- sample_metadata_df[, env_vars, drop = FALSE]
-env_data <- data.frame(env_data, row.names = rownames(env_data))
-env_data <- env_data[complete.cases(env_data), , drop = FALSE]
-env_data$Group_GI <- factor(env_data$Group_GI)
-
-bray_dist_initial_ordered <- as.dist(
-  as.matrix(bray_dist_initial)[rownames(env_data), rownames(env_data)]
-)
-
-# --- Overall PERMANOVA and dispersion check ---
-
-set.seed(666)
-
-adonis_group_gi <- adonis2(
-  bray_dist_initial_ordered ~ Group_GI,
-  data = env_data,
-  permutations = 999
-)
-
-betadisper_group_gi <- betadisper(
-  bray_dist_initial_ordered,
-  env_data$Group_GI
-)
-betadisper_group_gi_anova <- anova(betadisper_group_gi)
-
-adonis_group_gi
-betadisper_group_gi_anova
-
-# --- Pairwise PERMANOVA ---
-
-pairwise_adonis_custom <- function(dist_matrix, meta_df, group_col) {
-  groups <- factor(meta_df[[group_col]])
-  u_groups <- levels(groups)
-  comb <- combn(u_groups, 2)
-
-  result <- data.frame(
-    comparison = character(),
-    F_value = numeric(),
-    R2 = numeric(),
-    p_value = numeric(),
-    adj_p_value = numeric(),
-    stringsAsFactors = FALSE
+# The upstream dissimilarity exports intentionally contain ice-sediment pairs
+# only. Recalculate the two distance matrices here and extract same-glacier
+# ice-water pairs, matching the original water analysis.
+water_sink_ids <- unique(as.character(
+  sample_metadata_df$Sample_ID[sample_metadata_df$Source == "water"]
+))
+missing_water_sinks <- setdiff(water_sink_ids, Proportion$Sample_ID)
+if (length(missing_water_sinks) > 0) {
+  stop(
+    "The frozen SourceTracker input is missing ",
+    length(missing_water_sinks),
+    " of ",
+    length(water_sink_ids),
+    " water sinks. The ice-source-proportion GAMM in Extended Data Table 2 ",
+    "requires ice and Unknown proportions for every water sink; use the ",
+    "updated full 183-sink SourceTracker table, which also retains the ",
+    "sediment sinks used for Figure 2e and Extended Data Table 1."
   )
-
-  for (i in 1:ncol(comb)) {
-    group_pair <- comb[, i]
-    subset_idx <- groups %in% group_pair
-    subset_samples <- rownames(meta_df)[subset_idx]
-
-    dist_mat <- as.matrix(dist_matrix)
-    subset_dist <- as.dist(dist_mat[subset_samples, subset_samples])
-    subset_groups <- droplevels(groups[subset_idx])
-    temp_df <- data.frame(group = subset_groups, row.names = subset_samples)
-
-    perm_res <- adonis2(subset_dist ~ group, data = temp_df, permutations = 999)
-
-    result[i, "comparison"] <- paste(group_pair[1], "vs", group_pair[2])
-    result[i, "F_value"] <- perm_res[1, "F"]
-    result[i, "R2"] <- perm_res[1, "R2"]
-    result[i, "p_value"] <- perm_res[1, "Pr(>F)"]
-  }
-
-  result$adj_p_value <- p.adjust(result$p_value, method = "BH")
-  result
 }
 
-pairwise_results <- pairwise_adonis_custom(bray_dist_initial_ordered, env_data, "Group_GI")
-print(pairwise_results)
+get_aligned_phyloseq_with_rooted_tree <- function(physeq_obj, tree_path) {
+  if (!file.exists(tree_path)) {
+    stop("The ASV tree required for water weighted UniFrac was not found: ", tree_path)
+  }
 
-# --- Extended Data Table 2 ---
+  raw_tree <- ape::read.tree(tree_path)
+  shared_taxa <- intersect(taxa_names(physeq_obj), raw_tree$tip.label)
 
-overall_permanova_row <- tibble(
-  Analysis = "Overall PERMANOVA",
-  Comparison = "All habitat-GI categories",
-  Df = unname(adonis_group_gi[1, "Df"]),
-  F = unname(adonis_group_gi[1, "F"]),
-  R2 = unname(adonis_group_gi[1, "R2"]),
-  `P value` = format_p_value(unname(adonis_group_gi[1, "Pr(>F)"])),
-  `Adjusted P value` = NA_character_,
-  `Dispersion P value` = format_p_value(unname(betadisper_group_gi_anova[1, "Pr(>F)"]))
+  if (length(shared_taxa) == 0) {
+    stop("No shared taxa were found between the phyloseq object and the ASV tree.")
+  }
+
+  physeq_aligned <- prune_taxa(shared_taxa, physeq_obj)
+  rooted_tree <- phytools::midpoint.root(ape::keep.tip(raw_tree, shared_taxa))
+  phy_tree(physeq_aligned) <- rooted_tree
+  physeq_aligned
+}
+
+extract_target_metrics_to_ice <- function(df, target_type, value_cols) {
+  df %>%
+    filter(
+      (Sample1_type == "ice" & Sample2_type == target_type) |
+        (Sample1_type == target_type & Sample2_type == "ice")
+    ) %>%
+    mutate(
+      Sample_ID = case_when(
+        Sample1_type == target_type & Sample2_type == "ice" ~ Sample1,
+        Sample1_type == "ice" & Sample2_type == target_type ~ Sample2,
+        TRUE ~ NA_character_
+      )
+    ) %>%
+    filter(!is.na(Sample_ID)) %>%
+    group_by(Sample_ID) %>%
+    summarise(
+      across(all_of(value_cols), ~ mean(.x, na.rm = TRUE)),
+      .groups = "drop"
+    )
+}
+
+extract_within_glacier_to_ice_from_distance <- function(
+  dist_obj,
+  metadata_df,
+  target_type
+) {
+  dist_mat <- as.matrix(dist_obj)
+  pair_index <- which(upper.tri(dist_mat), arr.ind = TRUE)
+
+  tibble(
+    Sample1 = rownames(dist_mat)[pair_index[, 1]],
+    Sample2 = colnames(dist_mat)[pair_index[, 2]],
+    Dissimilarity = dist_mat[pair_index]
+  ) %>%
+    left_join(
+      metadata_df %>%
+        select(Sample_ID, gl_name, Source) %>%
+        rename(Sample1 = Sample_ID, gl_name_1 = gl_name, Sample1_type = Source),
+      by = "Sample1"
+    ) %>%
+    left_join(
+      metadata_df %>%
+        select(Sample_ID, gl_name, Source) %>%
+        rename(Sample2 = Sample_ID, gl_name_2 = gl_name, Sample2_type = Source),
+      by = "Sample2"
+    ) %>%
+    filter(
+      gl_name_1 == gl_name_2,
+      (Sample1_type == "ice" & Sample2_type == target_type) |
+        (Sample1_type == target_type & Sample2_type == "ice")
+    ) %>%
+    extract_target_metrics_to_ice(
+      target_type = target_type,
+      value_cols = "Dissimilarity"
+    )
+}
+
+ps_rel_water <- transform_sample_counts(ps, function(x) x / sum(x))
+BC_water_dist <- distance(ps_rel_water, method = "bray")
+ps_rel_water_phylo <- get_aligned_phyloseq_with_rooted_tree(ps_rel_water, tree_path)
+UF_water_dist <- distance(ps_rel_water_phylo, method = "wunifrac")
+
+BC_dissimilarity_water_df <- extract_within_glacier_to_ice_from_distance(
+  BC_water_dist,
+  sample_metadata_df,
+  target_type = "water"
+) %>%
+  rename(BC_dissimilarity_to_ice = Dissimilarity)
+
+UF_dissimilarity_water_df <- extract_within_glacier_to_ice_from_distance(
+  UF_water_dist,
+  sample_metadata_df,
+  target_type = "water"
+) %>%
+  rename(UF_dissimilarity_to_ice = Dissimilarity)
+
+combined_df_water <- sample_metadata_df %>%
+  left_join(
+    BC_dissimilarity_water_df %>% select(Sample_ID, BC_dissimilarity_to_ice),
+    by = "Sample_ID"
+  ) %>%
+  left_join(
+    UF_dissimilarity_water_df %>% select(Sample_ID, UF_dissimilarity_to_ice),
+    by = "Sample_ID"
+  ) %>%
+  left_join(Proportion, by = "Sample_ID") %>%
+  filter(Source == "water")
+
+if (!"BA" %in% names(combined_df_water)) {
+  stop("BA was not found in water sample metadata.")
+}
+
+combined_df_water$BA <- as.numeric(as.character(combined_df_water$BA))
+combined_df_water$Sample <- sub("_[A-Za-z]+$", "", combined_df_water$Sample_ID)
+
+combined_final_water <- combined_df_water %>%
+  group_by(Sample) %>%
+  summarise(
+    across(
+      where(is.numeric),
+      list(mean = ~ mean(., na.rm = TRUE), sd = ~ sd(., na.rm = TRUE)),
+      .names = "{.col}_{.fn}"
+    ),
+    across(!where(is.numeric), ~ first(.)),
+    .groups = "drop"
+  ) %>%
+  select(-Sample_ID) %>%
+  rename(
+    Sample_ID = Sample,
+    GI = GI_mean,
+    Elevation = Elevation_mean,
+    distance = distance_to_glacier_snout_mean,
+    gl_size = gl_size_mean
+  ) %>%
+  mutate(distance = distance / 1000)
+
+combined_final_water$gl_name <- droplevels(as.factor(combined_final_water$gl_name))
+combined_final_water$Region <- droplevels(as.factor(combined_final_water$Region))
+combined_final_water$GI <- as.numeric(as.character(combined_final_water$GI))
+
+water_metric_sample_sizes <- tibble(
+  metric = c(
+    "BC_dissimilarity_to_ice",
+    "UF_dissimilarity_to_ice",
+    "Ice_proportion",
+    "BA"
+  ),
+  water_replicates_with_values = c(
+    sum(!is.na(combined_df_water$BC_dissimilarity_to_ice)),
+    sum(!is.na(combined_df_water$UF_dissimilarity_to_ice)),
+    sum(!is.na(combined_df_water$Ice_proportion)),
+    sum(!is.na(combined_df_water$BA))
+  ),
+  merged_samples_with_values = c(
+    sum(!is.na(combined_final_water$BC_dissimilarity_to_ice_mean)),
+    sum(!is.na(combined_final_water$UF_dissimilarity_to_ice_mean)),
+    sum(!is.na(combined_final_water$Ice_proportion_mean)),
+    sum(!is.na(combined_final_water$BA_mean))
+  )
+)
+print(water_metric_sample_sizes)
+
+# --- Water beta-response GAMMs ---
+
+# This secondary water analysis follows the sediment inferential framework while
+# retaining the original exploratory environmental screen. For each response,
+# the ML candidates include GI, distance from the glacier snout, glacier size,
+# and the joint distance-plus-size model, all adjusted for Region and glacier
+# identity where appropriate. The prespecified additive Region + GI model is
+# refitted with REML for inference, and a no-random-effect sensitivity model is
+# retained. Compare AIC/BIC only among models fitted to the same response, data,
+# and estimation method.
+fit_water_beta_gamms <- function(response, data) {
+  model_formula <- function(rhs) {
+    as.formula(paste(response, "~", rhs), env = parent.frame())
+  }
+
+  list(
+    empty_random = gam(
+      model_formula("1 + s(gl_name, bs = 're')"),
+      family = betar(link = "logit"),
+      data = data,
+      method = "ML"
+    ),
+    region_baseline = gam(
+      model_formula("Region + s(gl_name, bs = 're')"),
+      family = betar(link = "logit"),
+      data = data,
+      method = "ML"
+    ),
+    gi_smooth = gam(
+      model_formula("Region + s(GI, k = 5) + s(gl_name, bs = 're')"),
+      family = betar(link = "logit"),
+      data = data,
+      method = "ML"
+    ),
+    distance_smooth = gam(
+      model_formula("Region + s(distance, k = 5) + s(gl_name, bs = 're')"),
+      family = betar(link = "logit"),
+      data = data,
+      method = "ML"
+    ),
+    glacier_size_smooth = gam(
+      model_formula("Region + s(gl_size, k = 5) + s(gl_name, bs = 're')"),
+      family = betar(link = "logit"),
+      data = data,
+      method = "ML"
+    ),
+    distance_glacier_size_smooth = gam(
+      model_formula(
+        paste(
+          "Region + s(distance, k = 5) + s(gl_size, k = 5)",
+          "+ s(gl_name, bs = 're')"
+        )
+      ),
+      family = betar(link = "logit"),
+      data = data,
+      method = "ML"
+    ),
+    gi_only = gam(
+      model_formula("GI + s(gl_name, bs = 're')"),
+      family = betar(link = "logit"),
+      data = data,
+      method = "ML"
+    ),
+    interaction = gam(
+      model_formula("Region * GI + s(gl_name, bs = 're')"),
+      family = betar(link = "logit"),
+      data = data,
+      method = "ML"
+    ),
+    region_baseline_reml = gam(
+      model_formula("Region + s(gl_name, bs = 're')"),
+      family = betar(link = "logit"),
+      data = data,
+      method = "REML"
+    ),
+    final = gam(
+      model_formula("Region + GI + s(gl_name, bs = 're')"),
+      family = betar(link = "logit"),
+      data = data,
+      method = "REML"
+    ),
+    final_no_random = gam(
+      model_formula("Region + GI"),
+      family = betar(link = "logit"),
+      data = data,
+      method = "REML"
+    )
+  )
+}
+
+water_bc_models <- fit_water_beta_gamms(
+  "BC_dissimilarity_to_ice_mean",
+  combined_final_water
+)
+water_uf_models <- fit_water_beta_gamms(
+  "UF_dissimilarity_to_ice_mean",
+  combined_final_water
+)
+water_prop_models <- fit_water_beta_gamms(
+  "Ice_proportion_mean",
+  combined_final_water
 )
 
-pairwise_permanova_rows <- pairwise_results %>%
-  transmute(
-    Analysis = "Pairwise PERMANOVA",
-    Comparison = comparison,
-    Df = 1,
-    F = F_value,
-    R2 = R2,
-    `P value` = format_p_value(p_value),
-    `Adjusted P value` = format_p_value(adj_p_value),
-    `Dispersion P value` = NA_character_
+summarise_water_beta_candidates <- function(models, response_label) {
+  tibble(
+    Response = response_label,
+    Model = c(
+      "Null + glacier RE",
+      "Region + glacier RE",
+      "Region + smooth GI + glacier RE",
+      "Region + smooth distance + glacier RE",
+      "Region + smooth glacier size + glacier RE",
+      "Region + smooth distance + smooth glacier size + glacier RE",
+      "GI + glacier RE",
+      "Region x GI + glacier RE"
+    ),
+    AIC = c(
+      AIC(models$empty_random),
+      AIC(models$region_baseline),
+      AIC(models$gi_smooth),
+      AIC(models$distance_smooth),
+      AIC(models$glacier_size_smooth),
+      AIC(models$distance_glacier_size_smooth),
+      AIC(models$gi_only),
+      AIC(models$interaction)
+    ),
+    BIC = c(
+      BIC(models$empty_random),
+      BIC(models$region_baseline),
+      BIC(models$gi_smooth),
+      BIC(models$distance_smooth),
+      BIC(models$glacier_size_smooth),
+      BIC(models$distance_glacier_size_smooth),
+      BIC(models$gi_only),
+      BIC(models$interaction)
+    )
   )
+}
 
-extended_permanova_results_table <- bind_rows(
-  overall_permanova_row,
-  pairwise_permanova_rows
+water_beta_model_selection <- bind_rows(
+  summarise_water_beta_candidates(
+    water_bc_models,
+    "Water Bray-Curtis dissimilarity to ice"
+  ),
+  summarise_water_beta_candidates(
+    water_uf_models,
+    "Water Weighted UniFrac dissimilarity to ice"
+  ),
+  summarise_water_beta_candidates(
+    water_prop_models,
+    "Water proportion of ice source"
+  )
+)
+print(water_beta_model_selection)
+
+# In the validated original R Markdown analysis, the Bray-Curtis and ice-source
+# proportion GI smooths were effectively linear and had the strongest support
+# among the corresponding environmental candidates. Support for adding GI to
+# weighted UniFrac was weaker. Region x GI interaction coefficients were not
+# statistically significant and were not retained. The additive Region + GI
+# structure was retained for parsimony and for direct comparison with the
+# sediment analysis. These interpretation choices concern the fixed frozen
+# dataset; the model table above remains the reproducible source for reviewing
+# candidate support.
+summary(water_bc_models$final)
+summary(water_bc_models$final_no_random)
+summary(water_uf_models$final)
+summary(water_uf_models$final_no_random)
+summary(water_prop_models$final)
+summary(water_prop_models$final_no_random)
+
+sim_res_water_BCdis <- simulateResiduals(water_bc_models$final, n = 1000)
+plotQQunif(sim_res_water_BCdis)
+testDispersion(sim_res_water_BCdis)
+plotResiduals(sim_res_water_BCdis, combined_final_water$GI)
+
+sim_res_water_UFdis <- simulateResiduals(water_uf_models$final, n = 1000)
+plotQQunif(sim_res_water_UFdis)
+testDispersion(sim_res_water_UFdis)
+plotResiduals(sim_res_water_UFdis, combined_final_water$GI)
+
+sim_res_water_prop <- simulateResiduals(water_prop_models$final, n = 1000)
+plotQQunif(sim_res_water_prop)
+testDispersion(sim_res_water_prop)
+plotResiduals(sim_res_water_prop, combined_final_water$GI)
+
+# Estimate the marginal contribution of GI by comparing the final additive
+# model with a Region-only baseline after both models have been refitted using
+# REML. Differences are reported for adjusted R2 and deviance explained; they
+# are descriptive model-fit increments, not independent hypothesis tests.
+summarise_water_gi_increment <- function(models, response_label) {
+  final_summary <- summary(models$final)
+  baseline_summary <- summary(models$region_baseline_reml)
+
+  tibble(
+    Response = response_label,
+    `Final adj. R2` = unname(final_summary$r.sq),
+    `Region-only adj. R2` = unname(baseline_summary$r.sq),
+    `GI increment in adj. R2` = unname(
+      final_summary$r.sq - baseline_summary$r.sq
+    ),
+    `Final deviance explained` = unname(final_summary$dev.expl),
+    `Region-only deviance explained` = unname(baseline_summary$dev.expl),
+    `GI increment in deviance explained` = unname(
+      final_summary$dev.expl - baseline_summary$dev.expl
+    )
+  )
+}
+
+water_gi_increment_summary <- bind_rows(
+  summarise_water_gi_increment(
+    water_bc_models,
+    "Water Bray-Curtis dissimilarity to ice"
+  ),
+  summarise_water_gi_increment(
+    water_uf_models,
+    "Water Weighted UniFrac dissimilarity to ice"
+  ),
+  summarise_water_gi_increment(
+    water_prop_models,
+    "Water proportion of ice source"
+  )
+) %>%
+  mutate(across(where(is.numeric), ~ round(.x, 4)))
+print(water_gi_increment_summary)
+
+# --- Water bacterial-abundance GAMM ---
+
+# This secondary analysis follows the sediment bacterial-abundance framework.
+# The prespecified main model is additive (Region + GI) with glacier identity as
+# a random-effect smooth. Null, Region-only, GI-only, additive, and Region x GI
+# models are fitted with ML for sensitivity comparisons; the additive model is
+# then refitted with REML for inference.
+if (!"BA_mean" %in% names(combined_final_water)) {
+  stop("BA_mean was not found in combined_final_water.")
+}
+
+ba_water_df <- combined_final_water %>%
+  transmute(Sample_ID, Region, gl_name, GI, BA_mean, BA_sd) %>%
+  filter(!is.na(GI), !is.na(BA_mean))
+
+ba_water_pseudocount <- min(
+  ba_water_df$BA_mean[ba_water_df$BA_mean > 0],
+  na.rm = TRUE
+) / 2
+if (!is.finite(ba_water_pseudocount)) {
+  ba_water_pseudocount <- 1
+}
+
+ba_water_df <- ba_water_df %>%
+  mutate(log10_BA = log10(BA_mean + ba_water_pseudocount))
+
+mod_BA_water_empty_random <- gam(
+  log10_BA ~ 1 + s(gl_name, bs = "re"),
+  data = ba_water_df,
+  method = "ML"
+)
+mod_BA_water_region_baseline <- gam(
+  log10_BA ~ Region + s(gl_name, bs = "re"),
+  data = ba_water_df,
+  method = "ML"
+)
+mod_BA_water_GI_only <- gam(
+  log10_BA ~ GI + s(gl_name, bs = "re"),
+  data = ba_water_df,
+  method = "ML"
+)
+mod_BA_water_region_GI <- gam(
+  log10_BA ~ Region + GI + s(gl_name, bs = "re"),
+  data = ba_water_df,
+  method = "ML"
+)
+mod_BA_water_9 <- gam(
+  log10_BA ~ Region * GI + s(gl_name, bs = "re"),
+  data = ba_water_df,
+  method = "ML"
+)
+
+water_BA_model_selection <- tibble(
+  Model = c(
+    "Null + glacier RE",
+    "Region + glacier RE",
+    "GI + glacier RE",
+    "Region + GI + glacier RE",
+    "Region x GI + glacier RE"
+  ),
+  AIC = c(
+    AIC(mod_BA_water_empty_random),
+    AIC(mod_BA_water_region_baseline),
+    AIC(mod_BA_water_GI_only),
+    AIC(mod_BA_water_region_GI),
+    AIC(mod_BA_water_9)
+  ),
+  BIC = c(
+    BIC(mod_BA_water_empty_random),
+    BIC(mod_BA_water_region_baseline),
+    BIC(mod_BA_water_GI_only),
+    BIC(mod_BA_water_region_GI),
+    BIC(mod_BA_water_9)
+  )
+)
+print(water_BA_model_selection)
+
+mod_BA_water_final_GI <- gam(
+  log10_BA ~ Region + GI + s(gl_name, bs = "re"),
+  data = ba_water_df,
+  method = "REML"
+)
+mod_BA_water_final_GI_no_random <- gam(
+  log10_BA ~ Region + GI,
+  data = ba_water_df,
+  method = "REML"
+)
+
+summary(mod_BA_water_final_GI)
+summary(mod_BA_water_final_GI_no_random)
+
+# --- Extended Data Table 2: water GAMM summary ---
+
+# This table summarizes models already fitted above and does not refit or alter
+# them. Response order, model labels, effect summaries, uncertainty columns,
+# model-fit statistics, and interaction-sensitivity rows follow sediment
+# Extended Data Table 1. The distance and glacier-size models remain exploratory
+# screening models and are therefore not added to the manuscript table.
+extended_water_gam_results_table <- bind_rows(
+  extract_model_table_row(
+    water_bc_models$empty_random,
+    "Water Bray-Curtis dissimilarity to ice",
+    "Null + glacier RE",
+    "none"
+  ),
+  extract_model_table_row(
+    water_bc_models$region_baseline,
+    "Water Bray-Curtis dissimilarity to ice",
+    "Region + glacier RE",
+    "none"
+  ),
+  extract_model_table_row(
+    water_bc_models$final,
+    "Water Bray-Curtis dissimilarity to ice",
+    "Region + GI + glacier RE",
+    "linear"
+  ),
+  extract_model_table_row(
+    water_uf_models$empty_random,
+    "Water Weighted UniFrac dissimilarity to ice",
+    "Null + glacier RE",
+    "none"
+  ),
+  extract_model_table_row(
+    water_uf_models$region_baseline,
+    "Water Weighted UniFrac dissimilarity to ice",
+    "Region + glacier RE",
+    "none"
+  ),
+  extract_model_table_row(
+    water_uf_models$final,
+    "Water Weighted UniFrac dissimilarity to ice",
+    "Region + GI + glacier RE",
+    "linear"
+  ),
+  extract_model_table_row(
+    water_prop_models$empty_random,
+    "Water proportion of ice source",
+    "Null + glacier RE",
+    "none"
+  ),
+  extract_model_table_row(
+    water_prop_models$region_baseline,
+    "Water proportion of ice source",
+    "Region + glacier RE",
+    "none"
+  ),
+  extract_model_table_row(
+    water_prop_models$final,
+    "Water proportion of ice source",
+    "Region + GI + glacier RE",
+    "linear"
+  ),
+  extract_model_table_row(
+    mod_BA_water_empty_random,
+    "Water bacterial abundance",
+    "Null + glacier RE",
+    "none"
+  ),
+  extract_model_table_row(
+    mod_BA_water_region_baseline,
+    "Water bacterial abundance",
+    "Region + glacier RE",
+    "none"
+  ),
+  extract_model_table_row(
+    mod_BA_water_final_GI,
+    "Water bacterial abundance",
+    "Region + GI + glacier RE",
+    "linear"
+  )
 ) %>%
   mutate(
-    F = round(F, 3),
-    R2 = round(R2, 3)
+    `Region x GI effect` = NA_character_,
+    `Region x GI 95% CI` = NA_character_,
+    `Region x GI P value` = NA_character_
+  ) %>%
+  bind_rows(
+    extract_interaction_table_row(
+      water_bc_models$interaction,
+      "Water Bray-Curtis dissimilarity to ice",
+      "Region x GI + glacier RE"
+    ),
+    extract_interaction_table_row(
+      water_uf_models$interaction,
+      "Water Weighted UniFrac dissimilarity to ice",
+      "Region x GI + glacier RE"
+    ),
+    extract_interaction_table_row(
+      water_prop_models$interaction,
+      "Water proportion of ice source",
+      "Region x GI + glacier RE"
+    ),
+    extract_interaction_table_row(
+      mod_BA_water_9,
+      "Water bacterial abundance",
+      "Region x GI + glacier RE"
+    )
+  ) %>%
+  mutate(
+    `Adj. R2` = round(`Adj. R2`, 3),
+    `Deviance explained` = round(`Deviance explained`, 3),
+    AIC = round(AIC, 1),
+    BIC = round(BIC, 1)
   )
 
 tryCatch(
   write.csv(
-    extended_permanova_results_table,
-    file.path(result_dir, "extended_data_table_2_permanova.csv"),
+    extended_water_gam_results_table,
+    file.path(result_dir, "extended_data_table_2_water_gamm_models.csv"),
     row.names = FALSE
   ),
   error = function(e) {
-    warning("Could not write extended PERMANOVA table: ", conditionMessage(e))
+    warning(
+      "Could not write extended_data_table_2_water_gamm_models.csv. ",
+      "Close the file if it is open and rerun the script. ",
+      "The table is still printed below. Original error: ",
+      conditionMessage(e)
+    )
   }
 )
 
-# Extended Data Table 2 tests differences in microbial community composition
-# among habitat and glacier-influence categories using Bray-Curtis
-# dissimilarity.
-print(extended_permanova_results_table)
+# Water beta-response estimates are on the logit-link scale; bacterial
+# abundance is modeled as log10(BA + half the smallest positive BA). Glacier RE
+# P values are approximate smooth-term P values from mgcv. Compare AIC/BIC only
+# among models fitted with the same estimation method.
+print(extended_water_gam_results_table)

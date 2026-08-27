@@ -1,5 +1,5 @@
 # KO-level association and KEGG GSEA using continuous LFC-GI
-# Manuscript outputs: Figure 4, Extended Data Figure 6, and Supplementary Data 2.
+# Manuscript outputs: Figure 4, Extended Data Figure 5, and Supplementary Data 2.
 # Writes complete pathway/module results and leading-edge KO tables.
 
 rm(list = ls())

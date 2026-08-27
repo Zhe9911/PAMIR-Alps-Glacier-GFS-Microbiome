@@ -4,8 +4,10 @@
 [Code index](../../README.md) |
 [Setup](../../../README.md#quick-start)
 
-This optional runner recalculates the Figure 2e SourceTracker2 result. The
-default workflow reads
+This optional runner recalculates the SourceTracker2 proportions used for
+Figure 2e and the sediment ice-source-proportion GAMM in Extended Data Table 1,
+as well as the corresponding water GAMM in Extended Data Table 2. The default
+workflow reads
 `data/processed/16s/sourcetracker/all_results_depth_10000.csv`.
 
 ## Run
@@ -23,7 +25,8 @@ The R command writes `ST_otu_table.biom` and `ST_metadata.csv` under
 
 ## Fixed settings
 
-- 19 glacier-wise runs; ice sources and non-ice sinks; depth 10,000.
+- 19 glacier-wise runs; ice sources and all water and sediment sinks; depth
+  10,000.
 - Burn-in 100; 10 restarts; 50 draws/restart; 8 workers.
 - Alpha1 0.001; alpha2 0.1; beta 10.
 

@@ -1,5 +1,5 @@
 # MAG GI-association analysis
-# Manuscript outputs: Figure 3b and Extended Data Figure 5.
+# Manuscript output: Figure 3b.
 # The MAG-level classifications are also used by Figures 3a, 3c, 4, and 5.
 
 rm(list = ls())
@@ -291,42 +291,10 @@ hist_plot <- ggplot(MAGs_info, aes(x = lfc_GI)) +
     y = "Count"
   )
 
-# --- Volcano plot ---
-volcano_plot <- ggplot(
-  final_mags_trend,
-  aes(x = lfc_GI, y = -log10(q_GI), color = Trend)
-) +
-  geom_point(alpha = 0.8, size = 3) +
-  scale_color_manual(
-    values = c(
-      "Glaciophiles" = "#D53E4F",
-      "Glaciophobes" = "#3288BD",
-      "Non-sig" = "#777777"
-    )
-  ) +
-  # Add reference thresholds.
-  geom_hline(yintercept = -log10(0.05), linetype = "dashed", color = "gray") +
-  geom_vline(xintercept = 0, linetype = "dashed", color = "gray") +
-  labs(
-    title = "MAG Associations with Glacial Index",
-    x = "Effect Size (Log Fold Change per unit GI)",
-    y = "-Log10(Adjusted P-value)"
-  ) +
-  theme_bw()
-
-# Save the LFC-GI distribution and volcano plot as separate vector PDFs.
+# Save the LFC-GI distribution as a vector PDF.
 ggsave(
   file.path(out_dir, "MAG_LFC_GI_distribution.pdf"),
   plot = hist_plot,
-  width = 6,
-  height = 4.5,
-  device = grDevices::cairo_pdf,
-  bg = "white"
-)
-
-ggsave(
-  file.path(out_dir, "MAG_GI_response_volcano.pdf"),
-  plot = volcano_plot,
   width = 6,
   height = 4.5,
   device = grDevices::cairo_pdf,

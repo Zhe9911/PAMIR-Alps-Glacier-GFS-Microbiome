@@ -1,4 +1,5 @@
 # 16S rRNA sequence preprocessing
+# Manuscript output: Extended Data Figure 6.
 # Produces the filtered phyloseq object used by downstream 16S analyses.
 
 gc()
@@ -319,7 +320,7 @@ genus_plot <- ggplot(combined_genus_df_new, aes(x = Sample, y = Abundance, fill 
   )
 
 ggsave(
-  file.path(qc_dir, "extended_data_figure_7_mock_composition.pdf"),
+  file.path(qc_dir, "extended_data_figure_6_mock_composition.pdf"),
   genus_plot,
   width = 6,
   height = 6

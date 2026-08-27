@@ -17,7 +17,10 @@ Rscript code/01_16s/05_nmds.R
 ```
 
 Outputs are written to `results/01_16s/`. The main downstream object is
-`results/01_16s/intermediate/PAMIR_16S_final.rds`.
+`results/01_16s/intermediate/PAMIR_16S_final.rds`. Step 1 also writes the
+mock-community validation shown in Extended Data Figure 6. Step 5 writes Figure
+2a together with `figure_2a_permanova_group_gi.csv` and
+`figure_2a_permdisp_group_gi.csv` under `results/01_16s/nmds/`.
 
 ## Inputs
 
@@ -26,4 +29,11 @@ Outputs are written to `results/01_16s/`. The main downstream object is
 - `data/processed/16s/mock_theoretical_data.csv`
 - `data/processed/16s/dna-sequences.tree`
 
-The 95%-coverage `estimateD()` bootstrap and plotted jitter use seed `666`.
+## Fixed settings
+
+- The 95%-coverage `estimateD()` bootstrap and plotted jitter use seed `666`.
+- Step 5 calculates Bray-Curtis dissimilarity for merged ice and sediment
+  samples, excluding water. It tests the four `Group_GI` classes with 9,999
+  permutations restricted within `gl_name`, then applies the same permutation
+  design to PERMDISP. Both tests use seed `666`; the PERMANOVA is an overall
+  group test and does not establish pairwise or strictly monotonic differences.
