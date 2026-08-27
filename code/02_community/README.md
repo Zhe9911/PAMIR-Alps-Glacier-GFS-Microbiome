@@ -53,15 +53,9 @@ to `results/generated/`.
 - `data/derived/frozen/16s/icamp/sediment_pairwise_process_fractions.csv`
 - `data/processed/16s/dna-sequences.tree` (water weighted UniFrac and optional full iCAMP run)
 
-The SourceTracker table used by the complete workflow must contain two rows
-(`ice` and `Unknown`) for each of 146 sediment and 37 water sinks. The data
-archive contains this complete 183-sink table. Its sediment rows support Figure
-2e and the sediment ice-source-proportion GAMM in Extended Data Table 1; its
-water rows support the corresponding GAMM in Extended Data Table 2. The other
-responses in Figures 2c-d and Extended Data Tables 1-2 use the phyloseq object,
-ASV tree, dissimilarity tables, and metadata listed above. The analysis validates
-water-sink coverage and stops with an explicit error if any required sink is
-absent.
+The frozen SourceTracker table must contain two rows (`ice` and `Unknown`) for
+each of 146 sediment and 37 water sinks (183 sinks total). The workflow validates
+this coverage and stops if any required sink is absent.
 
 ## Fixed settings
 

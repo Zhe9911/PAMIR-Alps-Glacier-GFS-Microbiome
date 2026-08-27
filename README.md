@@ -17,11 +17,8 @@ Analysis code and reproducibility materials for the manuscript:
    [Zenodo](https://doi.org/10.5281/zenodo.21703331). Extract the archive, then
    copy its `data/` directory into the repository root.
 
-   The data archive contains the full frozen SourceTracker table covering 146
-   sediment and 37 water sinks. Its sediment rows support Figure 2e and the
-   ice-source-proportion GAMM in Extended Data Table 1; its water rows support
-   the corresponding GAMM in Extended Data Table 2. See the
-   [`02_community` input note](code/02_community/README.md#inputs).
+   The archive includes the complete 183-sink SourceTracker input required by
+   the [`02_community` workflow](code/02_community/README.md#inputs).
 
 3. Install R 4.5.2 and restore the locked R packages:
 
@@ -34,7 +31,7 @@ Analysis code and reproducibility materials for the manuscript:
    | Order | Module | Requirements |
    |---|---|---|
    | 1 | [`01_16s`](code/01_16s/README.md) | Zenodo data |
-   | 2 | [`02_community`](code/02_community/README.md) | Module 01 outputs; frozen sediment and water SourceTracker results |
+   | 2 | [`02_community`](code/02_community/README.md) | Module 01 outputs and Zenodo data |
    | 3 | [`03_mags`](code/03_mags/README.md) | Module 01 outputs and Zenodo data |
    | 4 | [`04_functions`](code/04_functions/README.md) | Module 03 outputs, Zenodo data and three external KEGG files |
    | 5 | [`05_polaromonas`](code/05_polaromonas/README.md) | Module 03 outputs and Zenodo data |

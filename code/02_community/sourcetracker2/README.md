@@ -4,10 +4,8 @@
 [Code index](../../README.md) |
 [Setup](../../../README.md#quick-start)
 
-This optional runner recalculates the SourceTracker2 proportions used for
-Figure 2e and the sediment ice-source-proportion GAMM in Extended Data Table 1,
-as well as the corresponding water GAMM in Extended Data Table 2. The default
-workflow reads
+This optional runner recalculates the SourceTracker2 table used by the default
+community workflow. By default, the R workflow reads the frozen input at
 `data/processed/16s/sourcetracker/all_results_depth_10000.csv`.
 
 ## Run
