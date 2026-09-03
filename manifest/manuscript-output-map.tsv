@@ -24,7 +24,7 @@ Extended Data Figure 5	all	code/04_functions/01_ko_gsea.R	results/04_functions/k
 Extended Data Figure 6	all	code/01_16s/01_preprocess_16s.R	results/01_16s/qc/extended_data_figure_6_mock_composition.pdf	Mock-community validation
 Extended Data Table 1	all	code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/extended_data_table_1_gamm_models.csv	Sediment GAMM model comparison and coefficients
 Extended Data Table 2	all	code/02_community/01_gamm_sourcetracker.R	results/02_community/gamm/extended_data_table_2_water_gamm_models.csv	Water GAMM model comparison and coefficients; the ice-source-proportion response uses the 37 water sinks in the full 183-sink frozen SourceTracker table
-Extended Data Table 3	all	code/02_community/03_icamp_analysis.R	results/02_community/icamp/extended_data_table_3.csv	iCAMP MRQAP coefficients
+Extended Data Table 3	all	code/02_community/03_icamp_analysis.R	results/02_community/icamp/extended_data_table_3.csv	iCAMP MRQAP coefficients for pairwise mean GI and absolute GI difference
 Extended Data Table 4	all	code/04_functions/02_kegg_phylogenetic_projection.R	results/04_functions/phylogenetic_projection/feature_within_phylum_trend_extended_data_table.csv	Within-phylum trend consistency
 Supplementary Data 1	environmental sample metadata and sample accounting	none	data/processed/16s/metadata_16S.csv;data/processed/16s/env_GI.csv	Released source tables used to assemble the final workbook
 Supplementary Data 2	complete KEGG GSEA and curated Polaromonas KO tables	code/04_functions/01_ko_gsea.R;code/05_polaromonas/03_ko_marker_analysis.R	results/04_functions/ko_gsea/Supplementary Data 2.csv;results/05_polaromonas/ko_clade_presence/Supplementary Data 2.csv	Two generated table components assembled in the final workbook

@@ -72,5 +72,5 @@ this coverage and stops if any required sink is absent.
   difference in adjusted R2 and deviance explained between the REML additive
   `Region + GI + glacier RE` model and its REML `Region + glacier RE` baseline.
 - iCAMP: 1,000 randomizations, seed `20260416`; HoS, HeS, HD, DL and DR.
-- Freedman-Lane MRQAP: 9,999 glacier-constrained permutations, seed `20260715`,
-  predictor-wise BH correction.
+- Freedman-Lane MRQAP for pairwise mean GI and absolute GI difference: 9,999
+  glacier-constrained permutations, seed `20260715`, predictor-wise BH correction.

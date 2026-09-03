@@ -442,15 +442,26 @@ extended_process_labels <- c(
   DR = "Drift and other undominated processes (DR)"
 )
 
-# Extended Data table for the primary GI_mean hypothesis. GI_difference remains
-# an adjustment term, and its secondary test is retained in the complete results.
+extended_predictor_labels <- c(
+  GI_mean = "pairwise mean GI",
+  GI_difference = "absolute GI difference"
+)
+
+# Extended Data table for both prespecified GI predictors. Keep the existing
+# schema and identify the predictor within the process label.
 # Because inference uses MRQAP, report observed t but omit model-based SE.
 extended_data_table <- model_results %>%
-  dplyr::filter(predictor == "GI_mean") %>%
-  dplyr::mutate(process_order = match(process, processes)) %>%
-  dplyr::arrange(process_order) %>%
+  dplyr::filter(predictor %in% names(extended_predictor_labels)) %>%
+  dplyr::mutate(
+    predictor_order = match(predictor, names(extended_predictor_labels)),
+    process_order = match(process, processes)
+  ) %>%
+  dplyr::arrange(predictor_order, process_order) %>%
   dplyr::transmute(
-    `Assembly process` = unname(extended_process_labels[process]),
+    `Assembly process` = paste0(
+      unname(extended_process_labels[process]), ": ",
+      unname(extended_predictor_labels[predictor])
+    ),
     `Coefficient (logit scale per predictor SD)` = estimate_logit_per_sd,
     `Odds ratio per predictor SD` = odds_ratio_per_sd,
     `Observed t statistic` = t_observed,
