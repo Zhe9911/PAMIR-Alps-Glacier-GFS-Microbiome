@@ -18,108 +18,225 @@ library(ggplot2)
 library(VennDiagram)
 library(tidyverse)
 library(grid)
+library(gridExtra)
 library(patchwork)
 # --- Load input data ---
 
 ps <- readRDS(input_path)
 print(ps)
 
-# Convert counts to relative abundance.
-ps_rel <- transform_sample_counts(ps, function(x) x / sum(x))
-
-# Extract the relative-abundance matrix.
-otu_rel_matrix <- as(otu_table(ps_rel), "matrix")
-otu_rel <- t(otu_rel_matrix)
-
-sample_info_df <- data.frame(sample_data(ps))
-
-tax_df <- as.data.frame(as(tax_table(ps), "matrix"))
-tax_df$OTUID <- rownames(tax_df)
-
 categories <- c("ice", "water", "sed")
 region_categories <- c("Alps", "Kyrgyzstan")
-
-# --- Region-level ASV overlap ---
-
-region_list <- list()
-
-for (region in region_categories) {
-  ps_region_subset <- prune_samples(sample_data(ps)$Region == region, ps)
-  present_asvs <- names(taxa_sums(ps_region_subset))[taxa_sums(ps_region_subset) > 0]
-  region_list[[region]] <- present_asvs
-}
-
 region_venn_colors <- c("#4F8FC0", "#D98C5F")
 
-venn_plot_regions <- venn.diagram(
-  x = region_list,
-  category.names = region_categories,
-  filename = NULL,
-  disable.logging = TRUE,
-  output = TRUE,
-  fill = region_venn_colors,
-  alpha = 0.5,
-  cex = 1.5,
-  cat.cex = 1.5,
-  main = "ASV Distribution Between Regions"
-)
+# --- Environment-specific region-level ASV overlap ---
 
-ggsave(
-  file.path(result_dir, "extended_data_figure_1_region_overlap.pdf"),
-  venn_plot_regions,
-  width = 5,
-  height = 5,
-  dpi = 300
-)
+# Compare the two regions within each environment so that geographic overlap is
+# not confounded by turnover among ice, streamwater, and sediment communities.
+region_display_labels <- c("Alps", "Central Asia")
 
-# Report the number of ASVs detected in each region.
-for (region in region_categories) {
-  cat(region, ": ", length(region_list[[region]]), " ASVs\n", sep = "")
-}
-
-# Summarize the relative abundance of ASVs shared by both regions.
-shared_region_asvs <- Reduce(intersect, region_list)
-
-otu_rel_region_matrix <- as(otu_table(ps_rel), "matrix")
-if (taxa_are_rows(ps_rel)) {
-  otu_rel_region_matrix <- t(otu_rel_region_matrix)
-}
-
-shared_region_rel_abundance <- rowSums(
-  otu_rel_region_matrix[, shared_region_asvs, drop = FALSE]
-)
-
-region_shared_abundance_summary <- tibble(
-  Sample_ID = rownames(otu_rel_region_matrix),
-  SharedRegionASVRelAbundance = shared_region_rel_abundance
-) %>%
-  left_join(
-    sample_info_df %>%
-      select(Sample_ID, Region),
-    by = "Sample_ID"
-  ) %>%
-  group_by(Region) %>%
-  summarise(
-    MeanSharedRegionASVRelAbundance = mean(SharedRegionASVRelAbundance, na.rm = TRUE),
-    .groups = "drop"
+run_environment_region_overlap <- function(physeq_obj, source_categories,
+                                           region_categories, output_dir,
+                                           venn_colors,
+                                           display_region_labels) {
+  sample_metadata <- data.frame(
+    sample_data(physeq_obj),
+    check.names = FALSE,
+    stringsAsFactors = FALSE
   )
 
-overall_shared_region_abundance <- mean(shared_region_rel_abundance, na.rm = TRUE)
+  regional_summary_list <- list()
+  per_sample_list <- list()
+  shared_asv_list <- list()
+  venn_grob_list <- list()
 
-region_shared_abundance_summary <- bind_rows(
-  tibble(
-    Region = "All samples",
-    MeanSharedRegionASVRelAbundance = overall_shared_region_abundance
-  ),
-  region_shared_abundance_summary
-)
+  for (source_category in source_categories) {
+    source_sample_ids <- rownames(sample_metadata)[
+      as.character(sample_metadata$Source) == source_category
+    ]
 
-print(region_shared_abundance_summary)
+    ps_source <- prune_samples(source_sample_ids, physeq_obj)
+    source_metadata <- data.frame(
+      sample_data(ps_source),
+      check.names = FALSE,
+      stringsAsFactors = FALSE
+    )
 
-write.csv(
-  region_shared_abundance_summary,
-  file.path(result_dir, "region_shared_asv_relative_abundance_summary.csv"),
-  row.names = FALSE
+    region_list <- setNames(vector("list", length(region_categories)),
+                            region_categories)
+
+    for (region in region_categories) {
+      region_sample_ids <- rownames(source_metadata)[
+        as.character(source_metadata$Region) == region
+      ]
+
+      ps_source_region <- prune_samples(region_sample_ids, ps_source)
+      region_taxa_sums <- taxa_sums(ps_source_region)
+      region_list[[region]] <- names(region_taxa_sums)[region_taxa_sums > 0]
+    }
+
+    shared_asvs <- Reduce(intersect, region_list)
+
+    # Save a Venn diagram for the regional comparison within this environment.
+    source_region_venn <- venn.diagram(
+      x = region_list,
+      category.names = display_region_labels,
+      filename = NULL,
+      output = TRUE,
+      fill = venn_colors,
+      alpha = 0.5,
+      cex = 1.5,
+      cat.cex = 1.2,
+      cat.pos = c(-20, 20),
+      main = paste("Regional ASV Overlap in", source_category)
+    )
+
+    venn_grob_list[[source_category]] <- grobTree(
+      children = source_region_venn
+    )
+
+    ggsave(
+      file.path(
+        output_dir,
+        paste0("venn_diagram_regions_within_", source_category, ".pdf")
+      ),
+      source_region_venn,
+      width = 5,
+      height = 5,
+      dpi = 300
+    )
+
+    # Calculate the fraction of each environment-specific sample represented by
+    # ASVs detected in both regions for that same environment.
+    ps_source_rel <- transform_sample_counts(ps_source, function(x) x / sum(x))
+    otu_rel_source_matrix <- as(otu_table(ps_source_rel), "matrix")
+    if (taxa_are_rows(ps_source_rel)) {
+      otu_rel_source_matrix <- t(otu_rel_source_matrix)
+    }
+
+    shared_rel_abundance <- rowSums(
+      otu_rel_source_matrix[, shared_asvs, drop = FALSE]
+    )
+
+    metadata_order <- match(
+      rownames(otu_rel_source_matrix),
+      rownames(source_metadata)
+    )
+
+    per_sample_source <- tibble(
+      Sample_ID = rownames(otu_rel_source_matrix),
+      Source = as.character(source_metadata$Source[metadata_order]),
+      Region = as.character(source_metadata$Region[metadata_order]),
+      SharedRegionASVCount = length(shared_asvs),
+      SharedRegionASVRelativeAbundance = shared_rel_abundance,
+      SharedRegionASVRelativeAbundancePercent = 100 * shared_rel_abundance
+    )
+
+    source_summary <- per_sample_source %>%
+      group_by(Source, Region) %>%
+      summarise(
+        SampleCount = n(),
+        MeanSharedRegionASVRelativeAbundance =
+          mean(SharedRegionASVRelativeAbundance),
+        SDSharedRegionASVRelativeAbundance =
+          sd(SharedRegionASVRelativeAbundance),
+        MedianSharedRegionASVRelativeAbundance =
+          median(SharedRegionASVRelativeAbundance),
+        MinSharedRegionASVRelativeAbundance =
+          min(SharedRegionASVRelativeAbundance),
+        MaxSharedRegionASVRelativeAbundance =
+          max(SharedRegionASVRelativeAbundance),
+        .groups = "drop"
+      ) %>%
+      mutate(
+        RegionalASVPoolCount = vapply(
+          Region,
+          function(region) length(region_list[[region]]),
+          integer(1)
+        ),
+        SharedRegionASVCount = length(shared_asvs),
+        SharedASVPercentOfRegionalPool =
+          100 * SharedRegionASVCount / RegionalASVPoolCount,
+        OverallMeanSharedRegionASVRelativeAbundance =
+          mean(per_sample_source$SharedRegionASVRelativeAbundance),
+        OverallMedianSharedRegionASVRelativeAbundance =
+          median(per_sample_source$SharedRegionASVRelativeAbundance),
+        .after = SampleCount
+      ) %>%
+      mutate(
+        MeanSharedRegionASVRelativeAbundancePercent =
+          100 * MeanSharedRegionASVRelativeAbundance,
+        OverallMeanSharedRegionASVRelativeAbundancePercent =
+          100 * OverallMeanSharedRegionASVRelativeAbundance
+      )
+
+    regional_summary_list[[source_category]] <- source_summary
+    per_sample_list[[source_category]] <- per_sample_source
+    shared_asv_list[[source_category]] <- tibble(
+      Source = rep(source_category, length(shared_asvs)),
+      ASV = shared_asvs
+    )
+
+    cat(
+      source_category, ": ",
+      length(region_list[[region_categories[1]]]), " ", region_categories[1],
+      " ASVs; ",
+      length(region_list[[region_categories[2]]]), " ", region_categories[2],
+      " ASVs; ", length(shared_asvs), " shared ASVs\n",
+      sep = ""
+    )
+  }
+
+  combined_region_venn <- arrangeGrob(grobs = venn_grob_list, nrow = 1)
+  ggsave(
+    file.path(output_dir, "extended_data_figure_1_region_overlap.pdf"),
+    combined_region_venn,
+    width = 15,
+    height = 5,
+    dpi = 300
+  )
+
+  regional_summary <- bind_rows(regional_summary_list)
+  per_sample_summary <- bind_rows(per_sample_list)
+  shared_asv_table <- bind_rows(shared_asv_list)
+
+  print(regional_summary)
+
+  write.csv(
+    regional_summary,
+    file.path(output_dir, "environment_region_overlap_summary.csv"),
+    row.names = FALSE
+  )
+  write.csv(
+    per_sample_summary,
+    file.path(
+      output_dir,
+      "environment_region_shared_asv_relative_abundance_per_sample.csv"
+    ),
+    row.names = FALSE
+  )
+  write.csv(
+    shared_asv_table,
+    file.path(output_dir, "environment_region_shared_asv_ids.csv"),
+    row.names = FALSE
+  )
+
+  invisible(
+    list(
+      summary = regional_summary,
+      per_sample = per_sample_summary,
+      shared_asvs = shared_asv_table
+    )
+  )
+}
+
+environment_region_overlap_results <- run_environment_region_overlap(
+  physeq_obj = ps,
+  source_categories = categories,
+  region_categories = region_categories,
+  output_dir = result_dir,
+  venn_colors = region_venn_colors,
+  display_region_labels = region_display_labels
 )
 
 # --- Habitat-level ASV overlap and taxonomic composition ---

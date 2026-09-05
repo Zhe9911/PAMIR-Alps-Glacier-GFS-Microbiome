@@ -16,7 +16,7 @@ Figure 4	all	code/04_functions/01_ko_gsea.R;code/04_functions/02_kegg_phylogenet
 Figure 5	a	code/05_polaromonas/01_pangenome_and_tree.R	results/05_polaromonas/Polaromonas_phylo_tree_with_outgroup_rectangular_heatmap.pdf	Rectangular rooted 46-MAG Polaromonas tree
 Figure 5	b	code/05_polaromonas/02_clade_contrast.R	results/05_polaromonas/clade_contrast/Polaromonas_clade_lfcGI_boxplot.pdf	Clade-D versus Clade-G exact permutation contrast
 Figure 5	c-d	code/05_polaromonas/03_ko_marker_analysis.R	results/05_polaromonas/marker_gene_clade_heatmap/Polaromonas_marker_gene_clade_copy_number_heatmap.pdf	Descriptive KO copy-number heatmap
-Extended Data Figure 1	all	code/01_16s/02_asv_overlap.R	results/01_16s/asv_overlap/extended_data_figure_1_region_overlap.pdf	Regional ASV overlap
+Extended Data Figure 1	all	code/01_16s/02_asv_overlap.R	results/01_16s/asv_overlap/extended_data_figure_1_region_overlap.pdf	Alps-Central Asia ASV overlap within ice, streamwater, and benthic sediment
 Extended Data Figure 2	all	code/01_16s/02_asv_overlap.R	results/01_16s/asv_overlap/extended_data_figure_2_intersection_taxonomy.pdf	Intersection taxonomy
 Extended Data Figure 3	all	code/03_mags/01_mag_asv_validation.R	results/03_mags/asv_mag_validation/Order_ASV_MAG_spearman_dotplot.pdf	Order-level ASV-MAG concordance
 Extended Data Figure 4	all	code/03_mags/01_mag_asv_validation.R	results/03_mags/asv_mag_validation/Procrustes_16S_MAG_NMDS.pdf	Community-wide Procrustes validation
