@@ -22,7 +22,7 @@ license: MIT
 repository-code: "https://github.com/Zhe9911/PAMIR-Alps-Glacier-GFS-Microbiome"
 references:
   - type: data
-    title: "Data for: Glacier-to-downstream continuum shapes microbial connectivity and adaptive genomic traits"
+    title: "Data for: Glacier-to-stream continuum shapes microbial connectivity and adaptive genomic traits"
     authors:
       - family-names: Liu
         given-names: Zhe
@@ -38,6 +38,6 @@ references:
         given-names: Nicola
       - family-names: Battin
         given-names: Tom
-    doi: "10.5281/zenodo.21703331"
-    version: "1.0"
-    date-released: 2026-08-07
+    doi: "10.5281/zenodo.23011861"
+    version: "2.0"
+    date-released: 2026-09-28

@@ -2,7 +2,7 @@
 
 Analysis code and reproducibility materials for the manuscript:
 
-> *Glacier-to-downstream continuum shapes microbial connectivity and adaptive genomic traits*
+> *Glacier-to-stream continuum shapes microbial connectivity and adaptive genomic traits*
 
 ## Quick start
 
@@ -14,7 +14,7 @@ Analysis code and reproducibility materials for the manuscript:
    ```
 
 2. Download `PAMIR-Alps-Glacier-GFS-Microbiome-data.zip` from
-   [Zenodo](https://doi.org/10.5281/zenodo.21703331). Extract the archive, then
+   [Zenodo](https://doi.org/10.5281/zenodo.21703330). Extract the archive, then
    copy its `data/` directory into the repository root.
 
    The archive includes the complete 183-sink SourceTracker input required by
@@ -49,6 +49,6 @@ Analysis code and reproducibility materials for the manuscript:
 ## License and citation
 
 Code is released under the [MIT License](LICENSE). The
-[Zenodo data package](https://doi.org/10.5281/zenodo.21703331) is released under
+[Zenodo data package](https://doi.org/10.5281/zenodo.21703330) is released under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Citation metadata are
 provided in [`CITATION.cff`](CITATION.cff).

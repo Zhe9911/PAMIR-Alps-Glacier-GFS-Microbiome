@@ -41,7 +41,9 @@ taxonomy16SFull <- ASV16SFull %>%
 taxonomy16SFull <- gsub(".__", "", taxonomy16SFull)
 
 # Load sample metadata.
-metadata16S_raw <- read.csv(file.path(input_dir, "metadata_16S.csv"), sep = ",") %>%
+metadata16S_raw <- read.csv(file.path(input_dir, "metadata_16S.csv"), sep = ",")
+names(metadata16S_raw)[1] <- "Sample"
+metadata16S_raw <- metadata16S_raw %>%
   column_to_rownames(var = "Sample")
 
 # Assign sediment GI groups while retaining habitat labels for other samples.
