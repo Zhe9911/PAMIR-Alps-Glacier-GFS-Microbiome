@@ -13,11 +13,9 @@ Rscript code/04_functions/01_ko_gsea.R
 Rscript code/04_functions/02_kegg_phylogenetic_projection.R
 ```
 
-Step 1 writes the KO-association volcano underlying Extended Data Figure 5 and
-the complete GSEA tables. The final manuscript panel was manually fine-tuned,
-so its layout differs slightly from the generated source figure. Step 2 requires
-step 1's significant GSEA tables. Outputs are written to
-`results/04_functions/`.
+Step 1 writes the complete GSEA tables and the source volcano for Extended Data
+Figure 5, whose manuscript layout was manually fine-tuned. Step 2 uses step 1's
+significant GSEA tables. Outputs are written to `results/04_functions/`.
 
 ## Inputs
 
@@ -39,16 +37,15 @@ These required files are not redistributed:
   downloaded in htext format on 2025-06-24 and flattened to
   `A,B,C,KO,Description,PATH,BR` (62,998 rows in the manuscript snapshot).
 - `data/processed/metagenomics/kegg_module_TERM2GENE.tsv`:
-  [`link/ko/module`](https://rest.kegg.jp/link/ko/module), queried on
-  2026-04-02, with prefixes removed, then deduplicated and sorted into
-  `term,KO` (4,156 rows in the manuscript snapshot).
+  [`link/ko/module`](https://rest.kegg.jp/link/ko/module), columns `term,KO`
+  (4,156 rows in the manuscript snapshot).
 - `data/processed/metagenomics/kegg_module_TERM2NAME.tsv`:
-  [`list/module`](https://rest.kegg.jp/list/module), queried on 2026-04-02,
-  with prefixes removed, then deduplicated and sorted into `term,name`
+  [`list/module`](https://rest.kegg.jp/list/module), columns `term,name`
   (570 rows in the manuscript snapshot).
 
-`KEGGREST` 1.50.0 was used for the module queries; it is a client version, not a
-KEGG release. Live KEGG content may differ. Obtain the files under the
+Both module mappings were queried on 2026-04-02 using `KEGGREST` 1.50.0, with
+prefixes removed and rows deduplicated and sorted. This client version does not
+identify a KEGG database release. Live content may differ; obtain files under the
 [KEGG terms](https://www.kegg.jp/kegg/legal.html).
 
 ## Main settings

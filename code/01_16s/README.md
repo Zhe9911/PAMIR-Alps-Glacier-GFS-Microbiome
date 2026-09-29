@@ -17,12 +17,11 @@ Rscript code/01_16s/05_nmds.R
 ```
 
 Outputs are written to `results/01_16s/`. The main downstream object is
-`results/01_16s/intermediate/PAMIR_16S_final.rds`. Step 1 also writes the
-mock-community validation shown in Extended Data Figure 6. Step 2 writes the
-Alps-versus-Central Asia ASV overlap within ice, streamwater, and benthic
-sediment for Extended Data Figure 1. Step 5 writes Figure 2a together with
-`figure_2a_permanova_group_gi.csv` and
-`figure_2a_permdisp_group_gi.csv` under `results/01_16s/nmds/`.
+`results/01_16s/intermediate/PAMIR_16S_final.rds`.
+
+Step 1 generates Extended Data Figure 6 (mock validation); step 2 generates
+Extended Data Figure 1 (Alps–Central Asia ASV overlap within each habitat).
+Step 5 generates Figure 2a and its PERMANOVA/PERMDISP tables.
 
 ## Inputs
 

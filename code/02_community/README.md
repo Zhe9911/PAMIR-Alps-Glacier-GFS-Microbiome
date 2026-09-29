@@ -14,8 +14,7 @@ Complete the [`01_16s` workflow](../01_16s/README.md) first.
 
 ## Default run
 
-This route reads frozen SourceTracker2 and iCAMP results and skips
-`02_icamp_run.R`:
+The default uses frozen SourceTracker2 and iCAMP results:
 
 ```text
 Rscript code/02_community/01_gamm_sourcetracker.R
@@ -53,9 +52,8 @@ to `results/generated/`.
 - `data/derived/frozen/16s/icamp/sediment_pairwise_process_fractions.csv`
 - `data/processed/16s/dna-sequences.tree` (water weighted UniFrac and optional full iCAMP run)
 
-The frozen SourceTracker table must contain two rows (`ice` and `Unknown`) for
-each of 146 sediment and 37 water sinks (183 sinks total). The workflow validates
-this coverage and stops if any required sink is absent.
+The frozen SourceTracker table requires `ice` and `Unknown` rows for each of
+183 sinks (146 sediment, 37 water). The script stops if any water sink is missing.
 
 ## Fixed settings
 
@@ -64,13 +62,12 @@ this coverage and stops if any required sink is absent.
   GI fixed effects, glacier identity as a random-effect smooth, ML candidate
   comparisons, and REML final models. Beta responses use a logit-link beta
   family; bacterial abundance uses `log10(BA + half the smallest positive BA)`.
-- The secondary water environmental screen also compares Region-adjusted smooth
-  terms for distance from the glacier snout, glacier size, and both predictors
-  together. These exploratory candidates are printed for review but are not
-  included in Extended Data Table 2.
-- For each water beta response, the marginal GI contribution is reported as the
-  difference in adjusted R2 and deviance explained between the REML additive
-  `Region + GI + glacier RE` model and its REML `Region + glacier RE` baseline.
+- Exploratory water models compare Region-adjusted smooths for distance from
+  the glacier snout, glacier size, and both predictors together. These are
+  printed but excluded from Extended Data Table 2.
+- For water beta responses, GI contribution is the difference in adjusted R2
+  and deviance explained between REML `Region + GI + glacier RE` and
+  `Region + glacier RE` models.
 - iCAMP: 1,000 randomizations, seed `20260416`; HoS, HeS, HD, DL and DR.
 - Freedman-Lane MRQAP for pairwise mean GI and absolute GI difference: 9,999
   glacier-constrained permutations, seed `20260715`, predictor-wise BH correction.

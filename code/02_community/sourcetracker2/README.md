@@ -4,9 +4,7 @@
 [Code index](../../README.md) |
 [Setup](../../../README.md#quick-start)
 
-This optional runner recalculates the SourceTracker2 table used by the default
-community workflow. By default, the R workflow reads the frozen input at
-`data/processed/16s/sourcetracker/all_results_depth_10000.csv`.
+This optional runner recalculates SourceTracker2 mixing proportions.
 
 ## Run
 
@@ -34,4 +32,4 @@ pandas 2.0.3; tqdm 4.67.1.
 
 SourceTracker2 is not managed by `renv` and exposes no seed, so exact
 regeneration is not guaranteed. Generated results do not replace the frozen
-input.
+input at `data/processed/16s/sourcetracker/all_results_depth_10000.csv`.

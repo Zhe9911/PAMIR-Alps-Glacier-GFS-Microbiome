@@ -17,9 +17,6 @@ Analysis code and reproducibility materials for the manuscript:
    [Zenodo](https://doi.org/10.5281/zenodo.21703330). Extract the archive, then
    copy its `data/` directory into the repository root.
 
-   The archive includes the complete 183-sink SourceTracker input required by
-   the [`02_community` workflow](code/02_community/README.md#inputs).
-
 3. Install R 4.5.2 and restore the locked R packages:
 
    ```text
