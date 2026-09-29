@@ -1,8 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this analysis code, please cite this repository and the companion dataset."
 title: "PAMIR-Alps-Glacier-GFS-Microbiome: analysis code and reproducibility materials"
-type: software
-version: "1.0"
 date-released: 2026-08-10
 authors:
   - family-names: Liu
@@ -20,6 +18,14 @@ keywords:
   - deglaciation
 license: MIT
 repository-code: "https://github.com/Zhe9911/PAMIR-Alps-Glacier-GFS-Microbiome"
+preferred-citation:
+  type: generic
+  title: "PAMIR-Alps-Glacier-GFS-Microbiome: analysis code and reproducibility materials"
+  authors:
+    - family-names: Liu
+      given-names: Zhe
+  year: 2026
+  url: "https://github.com/Zhe9911/PAMIR-Alps-Glacier-GFS-Microbiome"
 references:
   - type: data
     title: "Data for: Glacier-to-stream continuum shapes microbial connectivity and adaptive genomic traits"
